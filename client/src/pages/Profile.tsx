@@ -63,6 +63,18 @@ const Profile = ({ user, onLogout }: ProfileProps) => {
     }))
   }
 
+  const handleAccountSettings = () => {
+    alert('Account Settings - Coming Soon!')
+  }
+
+  const handlePrivacySecurity = () => {
+    alert('Privacy & Security Settings - Coming Soon!')
+  }
+
+  const handleHelpSupport = () => {
+    alert('Help & Support - Coming Soon!')
+  }
+
   return (
     <div className="p-4 pb-20 space-y-6" data-testid="profile-page">
       {/* Header */}
@@ -212,15 +224,30 @@ const Profile = ({ user, onLogout }: ProfileProps) => {
 
       {/* Menu Options */}
       <div className="space-y-3">
-        <Button variant="outline" className="w-full justify-start" data-testid="button-account-settings">
+        <Button 
+          variant="outline" 
+          className="w-full justify-start" 
+          onClick={handleAccountSettings}
+          data-testid="button-account-settings"
+        >
           <Settings className="h-4 w-4 mr-3" />
           Account Settings
         </Button>
-        <Button variant="outline" className="w-full justify-start" data-testid="button-privacy">
+        <Button 
+          variant="outline" 
+          className="w-full justify-start" 
+          onClick={handlePrivacySecurity}
+          data-testid="button-privacy"
+        >
           <Shield className="h-4 w-4 mr-3" />
           Privacy & Security
         </Button>
-        <Button variant="outline" className="w-full justify-start" data-testid="button-help">
+        <Button 
+          variant="outline" 
+          className="w-full justify-start" 
+          onClick={handleHelpSupport}
+          data-testid="button-help"
+        >
           <HelpCircle className="h-4 w-4 mr-3" />
           Help & Support
         </Button>

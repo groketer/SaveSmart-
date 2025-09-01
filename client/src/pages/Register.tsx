@@ -60,8 +60,7 @@ const Register = ({ onLogin }: RegisterProps) => {
 
   return (
     <div 
-      className="min-h-screen flex items-center justify-center p-4" 
-      style={{ background: 'linear-gradient(135deg, var(--savesmart-blue) 0%, var(--savesmart-green) 100%)' }}
+      className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-blue-50 to-green-50" 
       data-testid="register-page"
     >
       <Card className="w-full max-w-md">

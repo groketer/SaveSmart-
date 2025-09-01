@@ -13,7 +13,8 @@ import {
   Home,
   Laptop,
   Car,
-  Umbrella
+  Umbrella,
+  Edit
 } from 'lucide-react'
 import { storage } from '@/lib/localStorage'
 import type { User, SavingsGoal } from '@shared/schema'
@@ -38,7 +39,14 @@ const SavingsGoals = ({ user }: SavingsGoalsProps) => {
     target: '',
     dueDate: ''
   })
+  const [editGoal, setEditGoal] = useState<{
+    id: string,
+    name: string,
+    target: string,
+    dueDate: string
+  } | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
 
   useEffect(() => {
     loadGoals()
@@ -69,6 +77,37 @@ const SavingsGoals = ({ user }: SavingsGoalsProps) => {
         userId: user.id,
         type: 'achievement',
         description: `Created new goal: ${newGoal.name}`
+      })
+    }
+  }
+
+  const handleEditGoal = (goal: SavingsGoal) => {
+    setEditGoal({
+      id: goal.id,
+      name: goal.name,
+      target: goal.target.toString(),
+      dueDate: goal.dueDate
+    })
+    setIsEditDialogOpen(true)
+  }
+
+  const handleUpdateGoal = () => {
+    if (editGoal && editGoal.name && editGoal.target && editGoal.dueDate) {
+      storage.updateSavingsGoal(editGoal.id, {
+        name: editGoal.name,
+        target: parseFloat(editGoal.target),
+        dueDate: editGoal.dueDate
+      })
+      
+      setEditGoal(null)
+      setIsEditDialogOpen(false)
+      loadGoals()
+      
+      // Add activity
+      storage.createActivity({
+        userId: user.id,
+        type: 'achievement',
+        description: `Updated goal: ${editGoal.name}`
       })
     }
   }
@@ -161,6 +200,54 @@ const SavingsGoals = ({ user }: SavingsGoalsProps) => {
         </Dialog>
       </div>
 
+      {/* Edit Goal Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent data-testid="dialog-edit-goal">
+          <DialogHeader>
+            <DialogTitle>Edit Savings Goal</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder="Goal name"
+              value={editGoal?.name || ''}
+              onChange={(e) => setEditGoal(prev => prev ? { ...prev, name: e.target.value } : null)}
+              data-testid="input-edit-goal-name"
+            />
+            <Input
+              type="number"
+              placeholder="Target amount ($)"
+              value={editGoal?.target || ''}
+              onChange={(e) => setEditGoal(prev => prev ? { ...prev, target: e.target.value } : null)}
+              data-testid="input-edit-goal-target"
+            />
+            <Input
+              type="date"
+              value={editGoal?.dueDate || ''}
+              onChange={(e) => setEditGoal(prev => prev ? { ...prev, dueDate: e.target.value } : null)}
+              data-testid="input-edit-goal-date"
+            />
+            <div className="flex space-x-2">
+              <Button 
+                onClick={handleUpdateGoal} 
+                className="flex-1 text-white" 
+                style={{ backgroundColor: 'var(--savesmart-blue)' }}
+                data-testid="button-update-goal"
+              >
+                Update Goal
+              </Button>
+              <Button 
+                variant="outline"
+                onClick={() => setIsEditDialogOpen(false)}
+                className="flex-1"
+                data-testid="button-cancel-edit"
+              >
+                Cancel
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
       {/* Goals Grid */}
       <div className="space-y-4">
         {goals.length === 0 ? (
@@ -192,7 +279,15 @@ const SavingsGoals = ({ user }: SavingsGoalsProps) => {
                         </p>
                       </div>
                     </div>
-                    <div className="text-right">
+                    <div className="flex items-center space-x-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        onClick={() => handleEditGoal(goal)}
+                        data-testid={`button-edit-${goal.id}`}
+                      >
+                        <Edit className="h-3 w-3" />
+                      </Button>
                       <Badge 
                         variant={daysRemaining > 30 ? "secondary" : daysRemaining > 0 ? "destructive" : "default"}
                         data-testid={`badge-days-${goal.id}`}

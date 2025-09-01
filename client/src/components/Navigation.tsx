@@ -12,7 +12,7 @@ const Navigation = () => {
   ]
 
   return (
-    <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t border-gray-200" data-testid="navigation-bar">
+    <div className="fixed bottom-0 left-1/2 transform -translate-x-1/2 w-full max-w-md bg-white border-t-2 border-gray-300 shadow-lg" data-testid="navigation-bar">
       <div className="flex items-center justify-around py-2">
         {navItems.map((item) => {
           const Icon = item.icon
@@ -25,7 +25,7 @@ const Navigation = () => {
               className={`flex flex-col items-center py-2 px-4 rounded-lg transition-colors ${
                 isActive 
                   ? 'text-white' 
-                  : 'text-gray-500 hover:text-gray-700'
+                  : 'text-gray-700 hover:text-gray-900 font-medium'
               }`}
               style={isActive ? { backgroundColor: 'var(--savesmart-blue)' } : {}}
               data-testid={`nav-${item.label.toLowerCase()}`}
